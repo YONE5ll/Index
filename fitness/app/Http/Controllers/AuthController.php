@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -13,23 +13,25 @@ class AuthController extends Controller
     // 1. SIGNUP API
     public function signup(Request $request)
     {
-        // Validate the incoming data
         $fields = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6'
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
         ]);
 
-        // Create the user in the database
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'password' => Hash::make($fields['password']) // Securely hash the password
+            'password' => Hash::make($fields['password']),
         ]);
 
         return response()->json([
             'message' => 'User registered successfully!',
-            'user' => $user
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
         ], 201);
     }
 

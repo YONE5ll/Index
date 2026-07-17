@@ -9,5 +9,3 @@ Route::get('/', function () {
 Route::get('/dbconn',function(){
     return view('dbconn');
 });
-
-
