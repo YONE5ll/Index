@@ -109,6 +109,17 @@
                 @php
                     $isCompleted = isset($dayProgress[$day->day_number]) && $dayProgress[$day->day_number]->is_completed;
                     $dayProgressData = $dayProgress[$day->day_number] ?? null;
+                    
+                    // Parse exercises - handle both array and JSON string
+                    $exercisesList = [];
+                    if (is_array($day->exercises)) {
+                        $exercisesList = $day->exercises;
+                    } elseif (is_string($day->exercises)) {
+                        $exercisesList = json_decode($day->exercises, true);
+                    }
+                    if (!is_array($exercisesList)) {
+                        $exercisesList = [];
+                    }
                 @endphp
                 <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200/50 dark:border-gray-800/50 hover:shadow-md transition-all 
                             {{ $isCompleted ? 'border-emerald-500/30 dark:border-emerald-500/30' : '' }}">
@@ -130,9 +141,9 @@
                             </div>
                         </div>
                         <div class="flex items-center space-x-3">
-                            @if($day->exercises)
-                                <button onclick="showExercises({{ $day->day_number }})" 
-                                        class="text-sm text-blue-500 hover:text-blue-600 transition-colors">
+                            @if(!empty($exercisesList))
+                                <button onclick="showExercises({{ $day->day_number }}, '{{ addslashes(json_encode($exercisesList)) }}')" 
+                                        class="text-sm text-blue-500 hover:text-blue-600 transition-colors px-3 py-1 bg-blue-500/10 rounded-lg">
                                     View Exercises
                                 </button>
                             @endif
@@ -196,34 +207,16 @@
 </div>
 
 <!-- Exercises Modal -->
-<div x-data="{ open: false, exercises: [], dayNumber: 0 }" 
-     x-on:keydown.escape.window="open = false"
-     class="fixed inset-0 z-50 overflow-y-auto" 
-     x-show="open" 
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0"
-     x-transition:enter-end="opacity-100"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100"
-     x-transition:leave-end="opacity-0"
-     style="display: none;">
+<div id="exercisesModal" class="fixed inset-0 z-50 overflow-y-auto hidden" style="display: none;">
     <div class="min-h-screen px-4 text-center">
-        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="open = false"></div>
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeExercisesModal()"></div>
         <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-        <div class="inline-block w-full max-w-2xl p-6 my-8 text-left align-middle bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-800/50 transform transition-all"
-             x-show="open"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100">
-            <h3 class="text-xl font-bold mb-4" x-text="'Day ' + dayNumber + ' Exercises'"></h3>
-            <div class="space-y-3">
-                <template x-for="exercise in exercises" :key="exercise">
-                    <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                        <p class="font-medium" x-text="exercise"></p>
-                    </div>
-                </template>
+        <div class="inline-block w-full max-w-2xl p-6 my-8 text-left align-middle bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-800/50 transform transition-all">
+            <h3 id="modalTitle" class="text-xl font-bold mb-4">Day Exercises</h3>
+            <div id="modalExercises" class="space-y-3">
+                <!-- Exercises will be inserted here -->
             </div>
-            <button @click="open = false" class="mt-4 w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors font-medium">
+            <button onclick="closeExercisesModal()" class="mt-4 w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors font-medium">
                 Close
             </button>
         </div>
@@ -234,24 +227,79 @@
 <script>
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-function showExercises(dayNumber) {
-    // Get exercises for this day from the challenge data
-    @php
-        $exercisesByDay = [];
-        foreach($challenge->days as $day) {
-            $exercisesByDay[$day->day_number] = $day->exercises ?? [];
+function showExercises(dayNumber, exercisesJson) {
+    const modal = document.getElementById('exercisesModal');
+    const title = document.getElementById('modalTitle');
+    const container = document.getElementById('modalExercises');
+    
+    title.textContent = 'Day ' + dayNumber + ' Exercises';
+    
+    try {
+        // Parse the JSON string
+        const exercises = JSON.parse(exercisesJson);
+        
+        if (exercises && exercises.length > 0) {
+            let html = '';
+            exercises.forEach(function(exercise) {
+                // Handle both string and object formats
+                let exerciseName = exercise;
+                let sets = 3;
+                let reps = '10-12';
+                
+                if (typeof exercise === 'object') {
+                    exerciseName = exercise.name || 'Exercise';
+                    sets = exercise.sets || 3;
+                    reps = exercise.reps || '10-12';
+                }
+                
+                html += `
+                    <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl flex items-center justify-between">
+                        <span class="font-medium">${exerciseName}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">${sets} sets × ${reps} reps</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = `
+                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                    <p class="text-gray-500 dark:text-gray-400">No exercises listed for this day</p>
+                </div>
+            `;
         }
-    @endphp
+    } catch (e) {
+        console.error('Error parsing exercises:', e);
+        container.innerHTML = `
+            <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                <p class="text-gray-500 dark:text-gray-400">Error loading exercises</p>
+            </div>
+        `;
+    }
     
-    const exercises = @json($exercisesByDay);
-    const dayExercises = exercises[dayNumber] || ['No exercises listed'];
-    
-    // Access the Alpine component
-    const modal = document.querySelector('[x-data]').__x.$data;
-    modal.open = true;
-    modal.dayNumber = dayNumber;
-    modal.exercises = dayExercises;
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
+
+function closeExercisesModal() {
+    const modal = document.getElementById('exercisesModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeExercisesModal();
+    }
+});
+
+// Close modal on outside click
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('exercisesModal');
+    if (e.target === modal) {
+        closeExercisesModal();
+    }
+});
 
 function completeDay(dayNumber) {
     if (!confirm('Complete day ' + dayNumber + '?')) return;
