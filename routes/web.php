@@ -129,6 +129,17 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password.update');
         Route::post('/delete-account', [SettingsController::class, 'deleteAccount'])->name('delete-account');
     });
+
+    // Challenges
+Route::prefix('challenges')->name('challenges.')->group(function () {
+    Route::get('/', [ChallengeController::class, 'index'])->name('index');
+    Route::get('/{challenge}', [ChallengeController::class, 'show'])->name('show');
+    Route::post('/{challenge}/join', [ChallengeController::class, 'join'])->name('join');
+    Route::post('/{challenge}/complete-day', [ChallengeController::class, 'completeDay'])->name('complete');
+    Route::delete('/{challenge}/leave', [ChallengeController::class, 'leave'])->name('leave');
+    Route::get('/{challenge}/progress', [ChallengeController::class, 'getProgress'])->name('progress');
+    Route::get('/{challenge}/stats', [ChallengeController::class, 'getStats'])->name('stats');
+});
 });
 
 // Fallback route for testing
