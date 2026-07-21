@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Nutrition - FitnessPro')
+@section('title', 'Nutrition - Byayam')
 
 @section('content')
 <div class="max-w-7xl mx-auto space-y-8">
@@ -17,12 +17,15 @@
                 ['label' => 'Calories', 'consumed' => 1845, 'target' => 2200, 'color' => 'emerald', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
                 ['label' => 'Protein', 'consumed' => 125, 'target' => 150, 'color' => 'blue', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
                 ['label' => 'Carbs', 'consumed' => 220, 'target' => 250, 'color' => 'orange', 'icon' => 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9'],
-                ['label' => 'Fat', 'consumed' => 45, 'target' => 65, 'color' => 'blue', 'icon' => 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z'],
+                ['label' => 'Fat', 'consumed' => 45, 'target' => 65, 'color' => 'purple', 'icon' => 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z'],
             ];
         @endphp
 
         @foreach($macros as $macro)
-            <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200/50 dark:border-gray-800/50">
+            @php
+                $percentage = min(($macro['consumed'] / $macro['target']) * 100, 100);
+            @endphp
+            <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200/50 dark:border-gray-800/50 hover:shadow-lg transition-all duration-300">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm text-gray-500 dark:text-gray-400">{{ $macro['label'] }}</span>
                     <div class="w-7 h-7 rounded-lg bg-{{ $macro['color'] }}-500/10 flex items-center justify-center">
@@ -35,7 +38,7 @@
                 <div class="text-xs text-gray-500 dark:text-gray-400">Target: {{ $macro['target'] }}</div>
                 <div class="mt-2 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div class="h-full bg-gradient-to-r from-{{ $macro['color'] }}-500 to-{{ $macro['color'] }}-400 rounded-full transition-all duration-1000" 
-                         style="width: {{ ($macro['consumed'] / $macro['target']) * 100 }}%"></div>
+                         style="width: {{ $percentage }}%"></div>
                 </div>
             </div>
         @endforeach
@@ -151,26 +154,42 @@
         </div>
     </div>
 
-    <!-- Nutrition Chart -->
+    <!-- Weekly Nutrition Chart - FIXED -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200/50 dark:border-gray-800/50">
         <h3 class="font-semibold mb-4">Weekly Nutrition</h3>
-        <div class="h-64 flex items-end justify-between space-x-2">
-            @php
-                $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                $calories = [1800, 2100, 1950, 2200, 2050, 2400, 1900];
-                $protein = [120, 150, 130, 145, 140, 160, 125];
-            @endphp
-            @foreach($days as $index => $day)
-                <div class="flex-1 flex flex-col items-center">
-                    <div class="w-full flex flex-col items-center space-y-1">
-                        <div class="w-full bg-blue-500/20 rounded-t-lg transition-all duration-500 hover:bg-blue-500/30"
-                             style="height: {{ ($protein[$index] / 200) * 100 }}%"></div>
-                        <div class="w-full bg-emerald-500/20 rounded-t-lg transition-all duration-500 hover:bg-emerald-500/30"
-                             style="height: {{ ($calories[$index] / 2500) * 100 }}%"></div>
+        <div class="relative h-64 w-full">
+            <div class="absolute inset-0 flex items-end justify-around px-2">
+                @php
+                    $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    $calories = [1800, 2100, 1950, 2200, 2050, 2400, 1900];
+                    $protein = [120, 150, 130, 145, 140, 160, 125];
+                    $maxValue = max(max($calories), max($protein) * 2);
+                    if ($maxValue < 100) $maxValue = 500;
+                @endphp
+
+                @foreach($days as $index => $day)
+                    @php
+                        $calPercentage = ($calories[$index] / $maxValue) * 100;
+                        $proPercentage = ($protein[$index] / ($maxValue / 2)) * 100;
+                        $calPercentage = min(max($calPercentage, 5), 100);
+                        $proPercentage = min(max($proPercentage, 5), 100);
+                    @endphp
+                    <div class="flex flex-col items-center h-full justify-end" style="width: 12%;">
+                        <div class="w-full flex flex-col items-center space-y-1">
+                            <!-- Protein Bar -->
+                            <div class="w-full bg-blue-500/30 rounded-t-lg transition-all duration-500 hover:bg-blue-500/40" 
+                                 style="height: {{ $proPercentage }}%; min-height: 8px;">
+                            </div>
+                            <!-- Calories Bar -->
+                            <div class="w-full bg-emerald-500/30 rounded-t-lg transition-all duration-500 hover:bg-emerald-500/40" 
+                                 style="height: {{ $calPercentage }}%; min-height: 8px;">
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400 mt-2">{{ $day }}</span>
+                        <span class="text-[8px] font-medium text-gray-600 dark:text-gray-300">{{ $calories[$index] }}</span>
                     </div>
-                    <span class="text-xs text-gray-500 dark:text-gray-400 mt-2">{{ $day }}</span>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
         <div class="flex justify-center space-x-4 mt-4">
             <span class="flex items-center space-x-2 text-sm">
