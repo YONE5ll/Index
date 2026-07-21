@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    // Add this method inside the User class
+public function routines()
+{
+    return $this->hasMany(Routine::class);
+}
 }
