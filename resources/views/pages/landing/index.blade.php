@@ -38,7 +38,7 @@
                     <a href="#features" class="text-gray-600 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Features</a>
                     <a href="#how-it-works" class="text-gray-600 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">How It Works</a>
                     <a href="#testimonials" class="text-gray-600 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Testimonials</a>
-                    <a href="#pricing" class="text-gray-600 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Pricing</a>
+
                 </div>
 
                 <!-- Right Section -->

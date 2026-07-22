@@ -84,7 +84,7 @@
     </div>
 
     <!-- Privacy & Security -->
-    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 p-6">
+    <!-- <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 p-6">
         <h3 class="font-semibold mb-4">Privacy & Security</h3>
         <div class="space-y-4">
             <div class="flex items-center justify-between">
@@ -117,7 +117,7 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Danger Zone -->
     <div class="bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-200 dark:border-red-800/30 p-6">

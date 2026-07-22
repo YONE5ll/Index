@@ -77,7 +77,7 @@
                     'duration' => '50 min',
                     'calories' => 380,
                     'muscles' => ['Quads', 'Hamstrings', 'Glutes', 'Calves'],
-                    'image' => 'https://images.unsplash.com/photo-1570824104453-508955ab713e?w=400&h=300&fit=crop',
+                    'image' => 'https://trufitathleticclubs.com/wp-content/uploads/2026/01/shutterstock_2663749503_dumbbell.webp',
                     'bookmarked' => false,
                     'color' => 'emerald'
                 ],
