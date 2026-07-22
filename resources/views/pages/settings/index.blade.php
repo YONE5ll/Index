@@ -27,7 +27,7 @@
     </div>
 
     <!-- Notification Settings -->
-    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 p-6">
+    <!-- <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 p-6">
         <h3 class="font-semibold mb-4">Notifications</h3>
         <div class="space-y-4">
             <div class="flex items-center justify-between">
@@ -61,7 +61,7 @@
                 </label>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Language & Units -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

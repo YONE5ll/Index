@@ -109,7 +109,9 @@ Route::middleware(['auth'])->group(function () {
     
     
     
-    
+    // Notifications
+    Route::get('/notifications', function () {
+        return view('pages.notifications.index');
     })->name('notifications.index');
     
     // Profile
@@ -138,6 +140,7 @@ Route::prefix('challenges')->name('challenges.')->group(function () {
     Route::get('/{challenge}/stats', [ChallengeController::class, 'getStats'])->name('stats');
 });
 
+});
 
 // Fallback route for testing
 Route::get('/home', function () {
