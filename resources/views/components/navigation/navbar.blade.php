@@ -5,12 +5,8 @@
         <div class="flex items-center space-x-4 flex-1">
             <!-- Search Bar -->
             <div class="hidden md:flex flex-1 max-w-md relative">
-                <input type="text" 
-                       placeholder="Search workouts, exercises, meals..." 
-                       class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all">
-                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
+                <h2 class="text-lg font-bold">Byayam Application</h2>
+               
             </div>
         </div>
 

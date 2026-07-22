@@ -29,7 +29,7 @@
                         </svg>
                     </div>
                     <span class="text-xl font-bold bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
-                        FitnessPro
+                        Byayam
                     </span>
                 </div>
 
@@ -333,78 +333,6 @@
                             @endfor
                         </div>
                         <p class="text-gray-600 dark:text-gray-300 italic">"{{ $testimonial['content'] }}"</p>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section id="pricing" class="py-20 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <span class="text-emerald-500 font-semibold text-sm uppercase tracking-wider">Pricing</span>
-                <h2 class="text-3xl md:text-4xl font-bold mt-2">Choose Your Plan</h2>
-                <p class="text-gray-600 dark:text-gray-400 mt-4">Start free and upgrade when you're ready</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                @php
-                    $plans = [
-                        [
-                            'name' => 'Starter',
-                            'price' => '$0',
-                            'period' => 'forever',
-                            'features' => ['Basic workout tracking', 'Nutrition logging', 'Progress dashboard', 'Community access'],
-                            'button' => 'Get Started',
-                            'popular' => false
-                        ],
-                        [
-                            'name' => 'Pro',
-                            'price' => '$19',
-                            'period' => 'per month',
-                            'features' => ['Everything in Starter', 'AI Coach', 'Advanced analytics', 'Custom workout plans', 'Priority support'],
-                            'button' => 'Start Free Trial',
-                            'popular' => true
-                        ],
-                        [
-                            'name' => 'Elite',
-                            'price' => '$49',
-                            'period' => 'per month',
-                            'features' => ['Everything in Pro', '1-on-1 coaching', 'Nutritionist access', 'Custom meal plans', 'Premium community'],
-                            'button' => 'Contact Sales',
-                            'popular' => false
-                        ]
-                    ];
-                @endphp
-
-                @foreach($plans as $plan)
-                    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border {{ $plan['popular'] ? 'border-emerald-500 shadow-emerald-500/20' : 'border-gray-200/50 dark:border-gray-800/50' }} relative">
-                        @if($plan['popular'])
-                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                                <span class="px-4 py-1 bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold rounded-full">Popular</span>
-                            </div>
-                        @endif
-                        <div class="p-8 text-center">
-                            <h3 class="text-xl font-bold mb-2">{{ $plan['name'] }}</h3>
-                            <div class="mb-4">
-                                <span class="text-4xl font-extrabold">{{ $plan['price'] }}</span>
-                                <span class="text-gray-500 dark:text-gray-400">/ {{ $plan['period'] }}</span>
-                            </div>
-                            <ul class="space-y-3 text-left mb-8">
-                                @foreach($plan['features'] as $feature)
-                                    <li class="flex items-center space-x-2">
-                                        <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                        </svg>
-                                        <span class="text-gray-600 dark:text-gray-300">{{ $feature }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                            <a href="{{ route('register') }}" class="block w-full py-3 rounded-xl font-semibold transition-all transform hover:scale-105 {{ $plan['popular'] ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg shadow-emerald-500/25' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700' }}">
-                                {{ $plan['button'] }}
-                            </a>
-                        </div>
                     </div>
                 @endforeach
             </div>
