@@ -1,0 +1,137 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{
+    DashboardController,
+    WorkoutController,
+    ExerciseController,
+    NutritionController,
+    ProgressController,
+    ProfileController,
+    SettingsController,
+    AICoachController,
+    CommunityController,
+    CalendarController,
+    ChallengeController,
+    AchievementController,
+};
+
+// Public Routes
+Route::get('/', function () {
+    return view('pages.landing.index');
+})->name('landing');
+
+// Auth Routes (using Laravel's built-in auth)
+Auth::routes();
+
+// Authenticated Routes
+Route::middleware(['auth'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Workouts - Full Resource with additional routes
+    Route::prefix('workouts')->name('workouts.')->group(function () {
+        Route::get('/', [WorkoutController::class, 'index'])->name('index');
+        Route::get('/create', [WorkoutController::class, 'create'])->name('create');
+        Route::post('/', [WorkoutController::class, 'store'])->name('store');
+        Route::get('/{workout}', [WorkoutController::class, 'show'])->name('show');
+        Route::get('/{workout}/edit', [WorkoutController::class, 'edit'])->name('edit');
+        Route::put('/{workout}', [WorkoutController::class, 'update'])->name('update');
+        Route::delete('/{workout}', [WorkoutController::class, 'destroy'])->name('destroy');
+        Route::post('/{workout}/start', [WorkoutController::class, 'start'])->name('start');
+        Route::post('/{workout}/complete', [WorkoutController::class, 'complete'])->name('complete');
+        Route::post('/{workout}/bookmark', [WorkoutController::class, 'bookmark'])->name('bookmark');
+        Route::get('/{workout}/progress', [WorkoutController::class, 'getProgress'])->name('progress');
+        Route::get('/{workout}/stats', [WorkoutController::class, 'getStats'])->name('stats');
+    });
+    
+    // Exercises - Full Resource with additional routes
+    Route::prefix('exercises')->name('exercises.')->group(function () {
+        Route::get('/', [ExerciseController::class, 'index'])->name('index');
+        Route::get('/create', [ExerciseController::class, 'create'])->name('create');
+        Route::post('/', [ExerciseController::class, 'store'])->name('store');
+        Route::get('/{exercise}', [ExerciseController::class, 'show'])->name('show');
+        Route::get('/{exercise}/edit', [ExerciseController::class, 'edit'])->name('edit');
+        Route::put('/{exercise}', [ExerciseController::class, 'update'])->name('update');
+        Route::delete('/{exercise}', [ExerciseController::class, 'destroy'])->name('destroy');
+        Route::get('/search', [ExerciseController::class, 'search'])->name('search');
+        Route::get('/history', [ExerciseController::class, 'getHistory'])->name('history');
+        Route::get('/stats', [ExerciseController::class, 'getStats'])->name('stats');
+        Route::get('/{exercise}/details', [ExerciseController::class, 'getDetails'])->name('details');
+        Route::post('/{exercise}/bookmark', [ExerciseController::class, 'toggleBookmark'])->name('bookmark');
+        Route::post('/{exercise}/start', [ExerciseController::class, 'start'])->name('start');
+        Route::post('/{exercise}/complete', [ExerciseController::class, 'complete'])->name('complete');
+        Route::get('/{exercise}/progress', [ExerciseController::class, 'getProgress'])->name('progress');
+    });
+    
+    // Nutrition
+    Route::prefix('nutrition')->name('nutrition.')->group(function () {
+        Route::get('/', [NutritionController::class, 'index'])->name('index');
+        Route::get('/track', [NutritionController::class, 'track'])->name('track');
+        Route::post('/log', [NutritionController::class, 'log'])->name('log');
+        Route::get('/search', [NutritionController::class, 'searchFood'])->name('search');
+    });
+    
+    // Progress
+    Route::prefix('progress')->name('progress.')->group(function () {
+        Route::get('/', [ProgressController::class, 'index'])->name('index');
+        Route::post('/weight', [ProgressController::class, 'updateWeight'])->name('weight.update');
+        Route::post('/photos', [ProgressController::class, 'uploadPhotos'])->name('photos.upload');
+    });
+    
+    // AI Coach
+    Route::prefix('ai-coach')->name('ai-coach.')->group(function () {
+        Route::get('/', [AICoachController::class, 'index'])->name('index');
+        Route::post('/chat', [AICoachController::class, 'chat'])->name('chat');
+    });
+    
+    // Community
+    Route::prefix('community')->name('community.')->group(function () {
+        Route::get('/', [CommunityController::class, 'index'])->name('index');
+        Route::post('/posts', [CommunityController::class, 'store'])->name('posts.store');
+        Route::post('/posts/{post}/like', [CommunityController::class, 'like'])->name('posts.like');
+        Route::post('/posts/{post}/comment', [CommunityController::class, 'comment'])->name('posts.comment');
+    });
+    
+    // Calendar
+    Route::prefix('calendar')->name('calendar.')->group(function () {
+        Route::get('/', [CalendarController::class, 'index'])->name('index');
+        Route::get('/events/{month}/{year}', [CalendarController::class, 'getEvents'])->name('events');
+        Route::post('/events', [CalendarController::class, 'addEvent'])->name('events.add');
+    });
+    
+    // Challenges
+    Route::prefix('challenges')->name('challenges.')->group(function () {
+        Route::get('/', [ChallengeController::class, 'index'])->name('index');
+        Route::get('/{challenge}', [ChallengeController::class, 'show'])->name('show');
+        Route::post('/{challenge}/join', [ChallengeController::class, 'join'])->name('join');
+    });
+    
+    // Achievements
+    Route::get('/achievements', [AchievementController::class, 'index'])->name('achievements.index');
+    
+    // Notifications
+    Route::get('/notifications', function () {
+        return view('pages.notifications.index');
+    })->name('notifications.index');
+    
+    // Profile
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('index');
+        Route::put('/', [ProfileController::class, 'update'])->name('update');
+        Route::post('/photo', [ProfileController::class, 'updatePhoto'])->name('photo.update');
+    });
+    
+    // Settings
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::put('/', [SettingsController::class, 'update'])->name('update');
+        Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password.update');
+        Route::post('/delete-account', [SettingsController::class, 'deleteAccount'])->name('delete-account');
+    });
+});
+
+// Fallback route for testing
+Route::get('/home', function () {
+    return redirect()->route('dashboard');
+})->name('home');
